@@ -1,6 +1,6 @@
 import streamlit as st
 from home_page import pagina_principal, nosotros
-from ui import glamping_tres_elementos, Alpes, cabaña , iniciar_sesion, registro_usuario, reserva_glamping
+from ui import glamping_tres_elementos, Alpes, cabaña , iniciar_sesion, registro_usuario, mis_reservas
 from utils import css_load
 
 def sidebar():
@@ -42,7 +42,7 @@ def sidebar():
     elif st.session_state.pagina == 'registro':
         registro_usuario()
     elif st.session_state.pagina == 'reserva':
-        reserva_glamping()
+        mis_reservas()
 
 if __name__ == "__main__":
     css_load("style/main.css")

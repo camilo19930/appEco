@@ -13,7 +13,7 @@ def glamping_tres_elementos():
             st.image(image, use_column_width=True)
         with text_column:
             st.subheader("Glamping Tres Elementos")
-            st.write('Aquí que incluye y en qué consiste el alojamiento')
+            st.write('El glamping tres elementos es un domo geodésico equipado con todo lo de un hotel convencional, es una experiencia diferente a lo que comúnmente conocemos sin dejar de lado la comodidad y la experiencia en un medio muy natural, sus atardeceres desde nuestro jacuzzi son lo máximo ❤️')
 
 def Alpes():
     st.title('GLAMPING LOS ALPES')
@@ -26,7 +26,7 @@ def Alpes():
             st.image(image, use_column_width=True)
         with text_column:
             st.subheader("Glamping Los Alpes")
-            st.write('Aquí que incluye y en qué consiste el alojamiento')
+            st.write('Nuestro glamping Los Alpes tiene una particular infraestructura en forma de pirámide, está rodeada de árboles frutales y nos permite la oportunidad de observar atardeceres hermosos desde la malla catamaran 🌅')
 
 def cabaña():
     st.title('CABAÑA COLORES')
@@ -39,7 +39,7 @@ def cabaña():
             st.image(image, use_column_width=True)
         with text_column:
             st.subheader("Cabaña Colores")
-            st.write('Aquí que incluye y en qué consiste el alojamiento')
+            st.write('La Cabaña Colores es todo lo que necesitas para descansar, está construida en guadua y es el alojamiento más grande que tiene Ecoparadise, es perfecto para parejas, familia y amigos por su amplio espacio.')
 
 
 def iniciar_sesion():
@@ -84,10 +84,24 @@ def registro_usuario():
             st.success("Usuario registrado exitosamente.")
             st.session_state.pagina = 'reserva'  # Redirigir a la página principal
             st.rerun()  # Recargar la página
+    
 
-def reserva_glamping():
-    st.title("Reserva Glamping")
+def mis_reservas():
+    st.title("Mis Reservas")
     st.write("---")
+    
+    fecha_reserva = st.date_input("Selecciona la fecha de tu reserva")
+    
+    cabañas = ["Cabaña Colores", "Glamping Tres Elementos", "Glamping Los Alpes"]
+    cabaña_seleccionada = st.selectbox("Selecciona tu cabaña", cabañas)
+    
+    comprobante = st.file_uploader("Adjunta tu comprobante de pago", type=["png", "jpg", "pdf"])
+    
+    if st.button("Confirmar reserva"):
+        if comprobante:
+            st.success(f"Reserva confirmada para el {fecha_reserva} en {cabaña_seleccionada}. Comprobante recibido.")
+        else:
+            st.error("Por favor, adjunta tu comprobante de pago.")
 
    
 
@@ -95,9 +109,9 @@ def reserva_glamping():
 def get_connection():
     conn = psycopg2.connect(
         host="localhost",  # Cambia esto a la dirección de tu servidor PostgreSQL
-        database="sale-system",  # Cambia esto al nombre de tu base de datos
+        database="db_ejemplo",  # Cambia esto al nombre de tu base de datos
         user="postgres",  # Cambia esto al usuario de PostgreSQL
-        password="1234"  # Cambia esto a tu contraseña de PostgreSQL
+        password="root"  # Cambia esto a tu contraseña de PostgreSQL
     )
     return conn
 def get_all_records(name, password):
