@@ -2,6 +2,15 @@ import streamlit as st
 from PIL import Image
 import psycopg2
 
+def get_connection():
+    conn = psycopg2.connect(
+        host="localhost",  # Cambia esto a la dirección de tu servidor PostgreSQL
+        database="db_ecoparadise" , # Cambia esto al nombre de tu base de datos
+        user="postgres",  # Cambia esto al usuario de PostgreSQL
+        password="root"  # Cambia esto a tu contraseña de PostgreSQL
+    )
+    return conn
+
 def glamping_tres_elementos():
     st.title('GLAMPING TRES ELEMENTOS')
     st.write("Bienvenidos a Ecoparadise")
@@ -91,10 +100,22 @@ def mis_reservas():
     st.write("---")
     
     fecha_reserva = st.date_input("Selecciona la fecha de tu reserva")
+    conn = get_connection()
+    cursor = conn.cursor()
+    select_query = "SELECT * FROM cabanas"
+    cursor.execute(select_query)
+    records = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    lista_cabanas = []
+    for elementos in records:
+        lista_cabanas.append(elementos[3])
+    print(lista_cabanas)
     
-    cabañas = ["Cabaña Colores", "Glamping Tres Elementos", "Glamping Los Alpes"]
+    cabañas = lista_cabanas 
+       
     cabaña_seleccionada = st.selectbox("Selecciona tu cabaña", cabañas)
-    
+
     comprobante = st.file_uploader("Adjunta tu comprobante de pago", type=["png", "jpg", "pdf"])
     
     if st.button("Confirmar reserva"):
@@ -103,28 +124,17 @@ def mis_reservas():
         else:
             st.error("Por favor, adjunta tu comprobante de pago.")
 
-   
-
-
-def get_connection():
-    conn = psycopg2.connect(
-        host="localhost",  # Cambia esto a la dirección de tu servidor PostgreSQL
-        database="db_ejemplo",  # Cambia esto al nombre de tu base de datos
-        user="postgres",  # Cambia esto al usuario de PostgreSQL
-        password="root"  # Cambia esto a tu contraseña de PostgreSQL
-    )
-    return conn
+ 
 def get_all_records(name, password):
     conn = get_connection()
     cursor = conn.cursor()
-    select_query = "SELECT * FROM mytable"
-    # cursor.execute(select_query)
-    select_query = "SELECT * FROM mytable WHERE name = %s AND pet = %s"
+    select_query = "SELECT * FROM usuarios WHERE nombre_usuario = %s AND clave = %s"
     cursor.execute(select_query, (name, password))
     records = cursor.fetchall()
     cursor.close()
     conn.close()
     return records
+
 def create_user(name, password):
     conn = get_connection()
     cursor = conn.cursor()
