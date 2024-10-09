@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 import psycopg2
-from db import get_generic_all_records, create_user, get_all_records
+from db import get_generic_all_records, create_user, get_all_records, create_reserva
 
 def glamping_tres_elementos():
     st.title('GLAMPING TRES ELEMENTOS')
@@ -102,33 +102,30 @@ def mis_reservas():
     if 'usuario' in st.session_state:
         dataUser = st.session_state['usuario']['datos']
         usuario = st.session_state['usuario']['nombre']
-        
         st.write(f"Bienvenido, {usuario}")
-        # Aquí continúa tu lógica de la página 'mis_reservas'
     else:
         st.warning("Por favor, inicie sesión para ver sus reservas.")
         
     fecha_reserva = st.date_input("Selecciona la fecha de tu reserva")
     dias_reserva = st.text_input("Ingrese la cantidad de días de la reserva")
-    records = get_generic_all_records("SELECT * FROM cabanas") 
-    
+    records = get_generic_all_records("SELECT * FROM cabanas")
     # Crear un diccionario donde la clave es el ID (elementos[0]) y el valor es el nombre (elementos[3])
     dict_cabanas = {elementos[0]: elementos[3] for elementos in records}
-
     # Crear una lista de los valores (nombres de cabanas) para mostrar en el selectbox
     cabanas = list(dict_cabanas.values())
-    
     # Mostrar selectbox
     cabana_seleccionada_nombre = st.selectbox("Selecciona tu cabana", cabanas)
     
     # Obtener la clave correspondiente al valor seleccionado
     cabana_seleccionada_id = next(key for key, value in dict_cabanas.items() if value == cabana_seleccionada_nombre)
-    print('id user',dataUser[0][0], 'id cabana', cabana_seleccionada_id, 'días reserva', dias_reserva, 'feacha', fecha_reserva)
     comprobante = st.file_uploader("Adjunta tu comprobante de pago", type=["png", "jpg", "pdf"])
     
     if st.button("Confirmar reserva"):
         if comprobante:
             st.success(f"Reserva confirmada para el {fecha_reserva} en la cabana '{cabana_seleccionada_nombre}' (ID: {cabana_seleccionada_id}). Comprobante recibido.")
+            create_reserva(fecha_reserva, dias_reserva, cabana_seleccionada_id, dataUser[0][0])
+            st.success("Reserva Creada exitosamente.")
+            
         else:
             st.error("Por favor, adjunta tu comprobante de pago.")
 

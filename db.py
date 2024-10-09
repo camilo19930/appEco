@@ -37,3 +37,12 @@ def create_user(name, password):
     conn.commit()
     cursor.close()
     conn.close()
+    
+def create_reserva(fecha, dias_reserva, cabana_id, usuario_id ):
+    conn = get_connection()
+    cursor = conn.cursor()
+    insert_query = "INSERT INTO reservas(fecha_reserva, dias_reserva, cabana_id, usuario_id) VALUES (%s, %s, %s, %s);"
+    cursor.execute(insert_query, (fecha, dias_reserva, cabana_id, usuario_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
